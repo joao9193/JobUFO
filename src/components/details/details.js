@@ -20,6 +20,14 @@ class DetailsComponent extends Component {
     constructor(props){
         super(props);
         this.state = Object.assign({},movieDetailsDefault);
+        this.goToDetails = this.goToDetails.bind(this);
+
+    }
+
+    goToDetails(id){
+       //this.props.history.push("/detail/"+id);
+       this.props.getMovieDetails({id:id});
+       this.props.getRecommendation({id:id});
     }
 
     componentWillMount(){
@@ -45,14 +53,19 @@ class DetailsComponent extends Component {
         if(nextProps.movieRecommendations.fetchingSuccess){
                 
                 //console.log(nextProps.movieRecommendations);
-                let currList = []
-
-                let dummyArray = [...this.state.recommendations,...nextProps.movieRecommendations.payload.results];
                 this.setState({
-                    recommendations:Object.assign([],[...dummyArray]),
+                    recommendations:[]
                 },()=>{
-                   console.log(this.state);
-                });
+                    let currList = []
+
+                    let dummyArray = [...this.state.recommendations,...nextProps.movieRecommendations.payload.results];
+                    this.setState({
+                        recommendations:Object.assign([],[...dummyArray])
+                    },()=>{
+                        //console.log("movie recommen"+this.state);                   
+                    });
+
+                },this)                
 
         }
     }
@@ -65,7 +78,7 @@ class DetailsComponent extends Component {
            <Container>
                {
                    this.state.data.id && <Row>
-                   <Col md="8" xs="12" sm="12">
+                   <Col className="m5" md="8" xs="12" sm="12">
                        <Card>
                            <Row>
                                <Col md="5">
@@ -79,14 +92,14 @@ class DetailsComponent extends Component {
                             {
                                 this.state.data.genres.map(function(geners){
                                     return (
-                                        <Badge className="genres" key={geners.id} color="info">{geners.name}</Badge>
+                                        <Badge className="genres" key={"geners"+geners.id} color="info">{geners.name}</Badge>
                                     )
                                 })
                             }                            
                             <CardText>Countries : {
                                       this.state.data.production_countries.map(function(countries,index){
                                             return (
-                                                <span key={index}>{countries.name}</span>
+                                                <span key={"countries"+index}>{countries.name}</span>
                                             )
                                       })
 
@@ -98,25 +111,26 @@ class DetailsComponent extends Component {
                        </Card>               
                    </Col>
                    
-                   <Col md="4" xs="12" sm="12">
+                   <Col className="m5" md="4" xs="12" sm="12">
                        <Card>
                            <CardHeader>Recommended Movies</CardHeader>
-                           <CardBody className="recommendConainer">
-                                
+                           <CardBody className="recommendConainer">                                
                                     {
-                                        this.state.recommendations.map(function(vals,index){
+                                       (this.state.recommendations.length > 0) ? this.state.recommendations.map(function(vals,index){
                                              return (
-                                                <Card>
-                                                     <CardImg top width="100%" src="https://placeholdit.imgix.net/~text?txtsize=33&txt=318%C3%97180&w=318&h=180" alt="Card image cap" />
+                                                <Card key={"recommendations_"+vals.id+index} className="recommendedMovieCard" onClick={ ()=> this.goToDetails(vals.id) }> 
+                                                     <CardImg top width="100%" src={img_Url+vals.poster_path} alt="Card image cap" />
                                                         <CardBody>
-                                                            <CardTitle>Card title</CardTitle>
-                                                            <CardSubtitle>Card subtitle</CardSubtitle>
-                                                            <CardText>Some quick example text to build on the card title and make up the bulk of the card's content.</CardText>
-                                                            <Button>Button</Button>
+                                                            <CardTitle>{vals.title}</CardTitle>
                                                         </CardBody>
                                                 </Card>
                                              )
-                                        })
+                                        },this) :
+                                       
+                                            
+                                               <CardTitle>No Recommendation Available</CardTitle>
+                                                     
+                                      
                                     }
                                    
                            </CardBody>                          

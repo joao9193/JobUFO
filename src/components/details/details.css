@@ -6,3 +6,17 @@
     max-height: 380px;
     overflow: auto;
 }
+
+.recommendedMovieCard{
+    margin: 5px;
+}
+
+.m5{
+    margin: 5px 0px;
+}
+
+.input-group-text-override{
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}

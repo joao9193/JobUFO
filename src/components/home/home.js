@@ -28,7 +28,20 @@ class HomeComponent extends Component {
         this.state = Object.assign({},defaultStateMovieList);
         this.handleScroll = this.handleScroll.bind(this);
         this.goToDetails = this.goToDetails.bind(this);
-        console.log("its home");
+        this.searchNameChange = this.searchNameChange.bind(this);
+        this.searchByStr = this.searchByStr.bind(this);
+    }
+
+    searchNameChange(e){
+        this.setState({
+            searchName:e.target.value
+        })
+    }
+
+    searchByStr(){
+        if(this.state.searchName.length > 2){
+            alert("go");
+        }         
     }
 
     goToDetails(id){
@@ -115,14 +128,14 @@ class HomeComponent extends Component {
                       
                       
                       <Col md="8" sm="12" xs="12" className="pd520 " >
-                             <Label for="exampleSelectMulti" className="homePageHeading">Popular Movies123</Label>
+                             <Label for="exampleSelectMulti" className="homePageHeading">Popular Movies</Label>
                       </Col>
                       <Col md="4" sm="12" xs="12" className="pd520" >
                                                            
                                 <InputGroup>
-                                  <Input  placeholder="movie name"/>
+                                  <Input name="movie_name" value={this.state.searchName} onChange={this.searchNameChange}  placeholder="movie name"/>
                                     <InputGroupAddon addonType="append">
-                                    <InputGroupText> <FaSearchPlus /> </InputGroupText>
+                                    <InputGroupText onClick={this.searchByStr} className={(this.state.searchName.length > 2) ? 'input-group-text-override': null }> <FaSearchPlus /> </InputGroupText>
                                     </InputGroupAddon>
                                 </InputGroup>
                            
