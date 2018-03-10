@@ -9,7 +9,7 @@ import {getAllPopularMovies,getMovieGenre} from "../../actions/moviesActions";
 
 import "./home.css";
 
-import StarRatingComponent from 'react-star-rating-component';
+//import StarRatingComponent from 'react-star-rating-component';
 import {img_Url} from "../../constants";
 import FaSearchPlus from 'react-icons/lib/fa/search-plus';
 
@@ -198,16 +198,3 @@ const homeDispatchToProps = (dispatch) => {
 }
 
 export const Home = connect(homeMapStateToProps,homeDispatchToProps)(HomeComponent)
-
-/*
- <div className="fLeft mR5">
-                                                      Rating
-                                                 </div> 
-                                                 <div  className="fLeft">
-                                                 <StarRatingComponent 
-                                                                        name="rate1" 
-                                                                        starCount={7}
-                                                                        value={2}
-                                                       />
-                                                 </div>
-*/
