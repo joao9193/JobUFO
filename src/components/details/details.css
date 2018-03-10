@@ -1,0 +1,8 @@
+.genres{
+    margin: 3px;
+}
+
+.recommendConainer{
+    max-height: 380px;
+    overflow: auto;
+}

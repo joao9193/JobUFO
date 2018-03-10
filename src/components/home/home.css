@@ -1,0 +1,46 @@
+.pad10{
+    padding: 10px;
+}
+
+.btnSearch{
+    margin-left: 3px;
+    margin-bottom: 1px;
+}
+
+.movieTile {
+    padding: 3px;
+    margin: 5px;
+}
+
+.movieTile img{
+    /*height: 250px;    */
+}
+
+.movieTile:hover{
+    border: 3px solid #000;
+    background-color: rgb(141, 141, 141);
+}
+
+.mR5{
+    margin-right: 5px;
+}
+
+.fLeft{
+   float: left;
+}
+
+.movieTile  .card-title {
+    margin-bottom: 0.75rem;
+    /*height: 28px;*/
+    text-align: center;
+    font-size: 16px;
+}
+
+.customBadge{
+    margin-right: 3px;
+}
+
+.homePageHeading{
+    font-size: 20px;
+    font-weight: bold;
+}
