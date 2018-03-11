@@ -14,7 +14,15 @@ import {
    REQUEST_MOVIE_RECOMMENDATION,
    REQUEST_MOVIE_RECOMMENDATION_SUCCESS,
    REQUEST_MOVIE_RECOMMENDATION_FAIL,
-   REQUEST_MOVIE_RECOMMENDATION_COMPLTED
+   REQUEST_MOVIE_RECOMMENDATION_COMPLTED,   
+   REQUEST_LIST_MOVIE_FAVOURITES,
+   REQUEST_LIST_MOVIE_FAVOURITES_SUCCESS,
+   REQUEST_LIST_MOVIE_FAVOURITES_COMPLETED,
+   REQUEST_ADD_MOVIE_FAVOURITES,
+   REQUEST_ADD_MOVIE_FAVOURITES_SUCCESS,
+   REQUEST_ADD_MOVIE_FAVOURITES_COMPLETED,
+   REQUEST_REMOVE_MOVIE_FAVOURITES,
+   REQUEST_REMOVE_MOVIE_FAVOURITES_SUCCESS
 } from "../actions/actionTypes";
 
 
@@ -230,5 +238,146 @@ export function getMovieRecommendationsFun(state = getMovieRecommendations,actio
     }
 
 }
+
+
+
+
+
+const listMoviesFavourites = {
+    fetchingStarted: false,
+    fetchingSuccess: false,
+    fetchingFail: false,
+    fetchingCompleted: false,
+    payload:  null
+}
+
+
+
+export function listMoviesFavouritesFun(state = listMoviesFavourites,actions){
+
+    switch (actions.type) {       
+        
+                case REQUEST_LIST_MOVIE_FAVOURITES: return Object.assign({}, state, {
+                                                        fetchingStarted: true,
+                                                        fetchingSuccess: false,
+                                                        fetchingFail: false,
+                                                        fetchingCompleted: false,
+                                                        payload: null
+                                                    });
+                                                    break;
+                case REQUEST_LIST_MOVIE_FAVOURITES_SUCCESS:
+                                                       
+                                                        return Object.assign({}, state, {
+                                                        fetchingStarted: false,
+                                                        fetchingSuccess: true,
+                                                        fetchingFail: false,
+                                                        fetchingCompleted: false,
+                                                        payload: actions.payload
+                                                    });
+                                                    break; 
+                case REQUEST_LIST_MOVIE_FAVOURITES_COMPLETED:
+                                                       
+                                                    return Object.assign({}, state, {
+                                                    fetchingStarted: false,
+                                                    fetchingSuccess: false,
+                                                    fetchingFail: false,
+                                                    fetchingCompleted: true,
+                                                    payload: null
+                                                });
+                                                break;                                    
+                default: return state;
+                break;
+
+    }
+
+}
+
+
+const addToMoviesFavourites = {
+    fetchingStarted: false,
+    fetchingSuccess: false,
+    fetchingFail: false,
+    fetchingCompleted: false,
+    payload:  null
+}  
+
+
+export function addMoviesFavouritesFun(state = addToMoviesFavourites,actions){
+
+    switch (actions.type) {       
+        
+                case REQUEST_ADD_MOVIE_FAVOURITES: return Object.assign({}, state, {
+                                                        fetchingStarted: true,
+                                                        fetchingSuccess: false,
+                                                        fetchingFail: false,
+                                                        fetchingCompleted: false,
+                                                        payload: null
+                                                    });
+                                                    break;
+                case REQUEST_ADD_MOVIE_FAVOURITES_SUCCESS:
+                                                        return Object.assign({}, state, {
+                                                        fetchingStarted: false,
+                                                        fetchingSuccess: true,
+                                                        fetchingFail: false,
+                                                        fetchingCompleted: false,
+                                                        payload: actions.payload
+                                                    });
+
+                case REQUEST_ADD_MOVIE_FAVOURITES_COMPLETED:
+                                                    return Object.assign({}, state, {
+                                                        fetchingStarted: false,
+                                                        fetchingSuccess: false,
+                                                        fetchingFail: false,
+                                                        fetchingCompleted: true,
+                                                        payload: actions.payload
+                                                    });
+
+                break;
+                default: return state;
+                break;
+
+    }
+
+}
+
+
+
+const removeMoviesFromFavourites = {
+    fetchingStarted: false,
+    fetchingSuccess: false,
+    fetchingFail: false,
+    fetchingCompleted: false,
+    payload:  null
+} 
+
+export function removeMovieFromFavouritesFun(state = removeMoviesFromFavourites,actions){
+
+    switch (actions.type) {       
+        
+                case REQUEST_REMOVE_MOVIE_FAVOURITES: return Object.assign({}, state, {
+                                                        fetchingStarted: true,
+                                                        fetchingSuccess: false,
+                                                        fetchingFail: false,
+                                                        fetchingCompleted: false,
+                                                        payload: null
+                                                    });
+                                                    break;
+                case REQUEST_REMOVE_MOVIE_FAVOURITES_SUCCESS:
+                                                        return Object.assign({}, state, {
+                                                        fetchingStarted: false,
+                                                        fetchingSuccess: true,
+                                                        fetchingFail: false,
+                                                        fetchingCompleted: false,
+                                                        payload: actions.payload
+                                                    });
+
+               
+                default: return state;
+                break;
+
+    }
+
+}
+
 
 

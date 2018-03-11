@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import {connect} from "react-redux";
 import { Row,Col, Card, CardImg, CardText, CardBody,
     CardTitle, CardSubtitle, Button ,Container,Form,FormGroup,Label,Input,Badge,InputGroup,InputGroupAddon,InputGroupText  } from 'reactstrap';
-import {getAllPopularMovies,getMovieGenre} from "../../actions/moviesActions";
+import {getAllPopularMovies,getMovieGenre,getMoviesWithNames} from "../../actions/moviesActions";
 
 
 import "./home.css";
@@ -17,6 +17,9 @@ import FaSearchPlus from 'react-icons/lib/fa/search-plus';
 const defaultStateMovieList = {
     page:1,
     searchName:"",
+    insearchMode:false,
+    inserachFirst:false,
+    insearchModeRelease:true,
     movieList:[],
     genres:[]
 }
@@ -29,20 +32,38 @@ class HomeComponent extends Component {
         this.handleScroll = this.handleScroll.bind(this);
         this.goToDetails = this.goToDetails.bind(this);
         this.searchNameChange = this.searchNameChange.bind(this);
-        this.searchByStr = this.searchByStr.bind(this);
     }
 
     searchNameChange(e){
         this.setState({
             searchName:e.target.value
-        })
+        },()=>{
+            if(this.state.searchName.length >= 1){
+                this.setState({
+                    page:1,
+                    insearchMode:true,
+                    inserachFirst:true,
+                    insearchModeRelease:false
+                },()=>{
+                    this.props.getMoviesWithNames({page:this.state.page,searchName:this.state.searchName}); 
+                },this)
+                
+            }else{ //Clear all from search box
+                //console.log("clear all");
+                this.setState({
+                    page:1,
+                    insearchMode:false,
+                    inserachFirst:false,
+                    insearchModeRelease:true
+                },()=>{
+                    this.props.getAllPopularMovies({page:this.state.page});
+                },this)    
+            }    
+
+        },this)
     }
 
-    searchByStr(){
-        if(this.state.searchName.length > 2){
-            alert("go");
-        }         
-    }
+   
 
     goToDetails(id){
         this.props.history.push("/detail/"+id);
@@ -56,18 +77,22 @@ class HomeComponent extends Component {
         const windowBottom = windowHeight + window.pageYOffset;
         
         if (windowBottom >= docHeight) {
-           console.log("bottom reached");
+           //console.log("bottom reached");
            //Increment page counting
            if(this.state.page < 1000){               
               this.setState({
                    page: this.state.page + 1
               },()=>{
-                   this.props.getAllPopularMovies({page:this.state.page});
+                  if(this.state.insearchMode){ //In search mode
+                    this.props.getMoviesWithNames({page:this.state.page,searchName:this.state.searchName}); 
+                  }else{
+                    this.props.getAllPopularMovies({page:this.state.page});
+                  }                   
               })
            }
                   
         } else {
-           console.log("not bottom reached");
+           //console.log("not bottom reached");
         }
       }
 
@@ -102,47 +127,93 @@ class HomeComponent extends Component {
             this.setState({
                 genres:Object.assign([],[...dummyArray]),
             },()=>{
-               console.log(this.state);
+               //console.log(this.state);
             });
 
         }
 
 
         if(nextProps.getMovies.fetchingSuccess){
-            let currList = []
 
-            let dummyArray = [...this.state.movieList,...nextProps.getMovies.payload.results];
-            this.setState({
-                movieList:Object.assign([],[...dummyArray]),
-                page:nextProps.getMovies.payload.page,
-            },()=>{
-                console.log("movielist ",this.state);
-            });
+            if(this.state.insearchMode && this.state.inserachFirst){ //In search mode
+                //console.log("in search mode");
+                this.setState({
+                    movieList:[],
+                    page:nextProps.getMovies.payload.page,
+                    inserachFirst:false //Resetting for not getting clear again
+                },()=>{
+                    let currList = [];
+                    let dummyArray = [...this.state.movieList,...nextProps.getMovies.payload.results];
+                    this.setState({
+                        movieList:Object.assign([],[...dummyArray]),                     
+                    },()=>{
+                         
+                    });
+                },this)
+            
+            }else{
+                //console.log("not search mode");
+
+                 //IF just got release from the search mode
+                 if(this.state.insearchModeRelease){ //If true search box is just cleared , so clear the current array and push new results
+                    this.setState({
+                        movieList:[],
+                        page:nextProps.getMovies.payload.page,
+                        insearchModeRelease:false //Makes text box clear done and next fresh data load
+                    },()=>{
+                        let currList = [];
+                        let dummyArray = [...this.state.movieList,...nextProps.getMovies.payload.results];
+                        this.setState({
+                            movieList:Object.assign([],[...dummyArray]),                     
+                        },()=>{
+                             
+                        });                       
+                    });
+
+
+                 }else{ //Normal case
+
+                    let currList = [];
+                    let dummyArray = [...this.state.movieList,...nextProps.getMovies.payload.results];
+                    this.setState({
+                        movieList:Object.assign([],[...dummyArray]),
+                        page:nextProps.getMovies.payload.page,
+                    },()=>{
+                       
+                    });
+
+                 }
+
+
+               
+
+            }
+           
         }
     }
 
     render(){
         return (  
                 <Container> 
-                  <Row>
-                      
-                      
-                      <Col md="8" sm="12" xs="12" className="pd520 " >
-                             <Label for="exampleSelectMulti" className="homePageHeading">Popular Movies</Label>
-                      </Col>
-                      <Col md="4" sm="12" xs="12" className="pd520" >
-                                                           
-                                <InputGroup>
-                                  <Input name="movie_name" value={this.state.searchName} onChange={this.searchNameChange}  placeholder="movie name"/>
-                                    <InputGroupAddon addonType="append">
-                                    <InputGroupText onClick={this.searchByStr} className={(this.state.searchName.length > 2) ? 'input-group-text-override': null }> <FaSearchPlus /> </InputGroupText>
-                                    </InputGroupAddon>
-                                </InputGroup>
-                           
-                      </Col>
-                                     
-                  </Row>
-                  <Row>   
+                    <Container className="searchBar">
+                            <Row>
+                                <Col md="8" sm="12" xs="12" className="pd520 " >
+                                        <Label for="exampleSelectMulti" className="homePageHeading">Popular Movies</Label>
+                                </Col>
+                                <Col md="4" sm="12" xs="12" className="pd520" >
+                                                                    
+                                            <InputGroup>
+                                            <Input name="movie_name" value={this.state.searchName} onChange={this.searchNameChange}  placeholder="movie name"/>
+                                                <InputGroupAddon addonType="append">
+                                                <InputGroupText className={(this.state.searchName.length > 2) ? 'input-group-text-override': null }> <FaSearchPlus /> </InputGroupText>
+                                                </InputGroupAddon>
+                                            </InputGroup>
+                                    
+                                </Col>     
+                            </Row>                    
+                    </Container>
+                 
+                  <Row className="homeMovieCards">   
                    
                             {
                                 this.state.movieList && this.state.movieList.map(function(val,index){
@@ -206,6 +277,7 @@ const homeMapStateToProps = (state) =>{
 const homeDispatchToProps = (dispatch) => {
   return bindActionCreators({
                 getAllPopularMovies,
+                getMoviesWithNames,
                 getMovieGenre  
            }, dispatch);
 }

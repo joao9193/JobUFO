@@ -23,9 +23,14 @@ import {connect} from "react-redux";
 
 import "./Layout.css"
 
-import {Home} from "../../components/home/home";
+
 import {Detail} from "../../components/details/details";
 import Loading from "../images/loading.gif";
+
+import {Home} from "../../components/home/home";
+import {Favourite} from  "../../components/favourite/favourite";
+
+import {listMovieFromFavourite} from "../../actions/moviesActions";
 
 
 class LayoutComponent extends Component {
@@ -35,19 +40,27 @@ class LayoutComponent extends Component {
     this.toggle = this.toggle.bind(this);
     this.state = {
       isOpen: false,
-      loading:false
+      loading:false,
+      myFavourites:0
     };
+    this.getActiveClass = this.getActiveClass.bind(this);
 
-    /*axios.post('http://localhost/yourshopes/yourshope-admin/Login','username=aa&&upassword=aa123',{withCredentials: true})
-    .then(function(response){
-      console.log('saved successfully')
-    });*/
+    this.props.listMovieFromFavourite();
+   
 
   }
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
     });
+  }
+
+  getActiveClass(val){
+    if ((window.location.href).indexOf(val) > 0) {
+         return 'menuLblSelected menuLbl';
+    } else {
+         return 'menuLbl';
+    }      
   }
 
   componentWillReceiveProps(nextProps){
@@ -60,6 +73,16 @@ class LayoutComponent extends Component {
               loading:false
              });
           }
+
+
+          //console.log("in lay out ",nextProps.listMoviesFavourites.payload);
+          if(nextProps.listMoviesFavourites && nextProps.listMoviesFavourites.payload){
+               this.setState({
+                   myFavourites:nextProps.listMoviesFavourites.payload.length
+               });
+          }
+         
+          
   }
 
 
@@ -70,21 +93,19 @@ class LayoutComponent extends Component {
                 
                              
                                  <Navbar className="fixed-top" expand="md">
-                                     <NavbarBrand href="/">reactstrap</NavbarBrand>
+                                     <NavbarBrand href="/">JobUFO</NavbarBrand>
                                      <NavbarToggler onClick={this.toggle} />
                                        <Collapse isOpen={this.state.isOpen} navbar>
                                           <Nav className="ml-auto" navbar>                                         
                                                 <NavItem>
-                                                <Badge color="info">  
-                                                  <NavLink className="menuLbl" href="">
-                                                      
-                                                           Popular Movies
-                                                      
-                                                  </NavLink>
-                                                  </Badge>
+                                                
+                                                  <Link  to="/" className={ this.getActiveClass("/home")   } href="">
+                                                       Popular Movies
+                                                  </Link>
+                                                 
                                                 </NavItem>
                                                 <NavItem>
-                                                  <NavLink className="menuLbl" href="">My favorite Movies</NavLink>
+                                                  <Link className={ this.getActiveClass("/favourite")   } to="/favourite">My favourite Movies {this.state.myFavourites}</Link>
                                                 </NavItem>                                                
                                           </Nav>
                                           
@@ -95,7 +116,8 @@ class LayoutComponent extends Component {
                                 
                                     <Switch>
                                         <Route path="/home" name="home" component={Home}/>  
-                                        <Route path="/detail/:id" name="detail" component={Detail} />                                                
+                                        <Route path="/detail/:id" name="detail" component={Detail} />  
+                                        <Route path="/favourite" name="favourite" component={Favourite} />                                             
                                         <Redirect from="/" to="/home"/>
                                     </Switch>
                                
@@ -115,10 +137,16 @@ class LayoutComponent extends Component {
 
 const layOutMapStateToProps = (state) =>{
   return {
-    statusOfLoading:state.statusOfLoading      
+    statusOfLoading:state.statusOfLoading,
+    listMoviesFavourites:state.listMoviesFavourites      
   }
 }
 
 
+const layoutDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+                   listMovieFromFavourite 
+           }, dispatch);
+}
 
-export const  Layout =  connect(layOutMapStateToProps,{})(LayoutComponent);
+export const  Layout =  connect(layOutMapStateToProps,layoutDispatchToProps)(LayoutComponent);

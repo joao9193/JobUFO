@@ -4,15 +4,18 @@ import { bindActionCreators } from 'redux'
 import {connect} from "react-redux";
 import { Row,Col, Card, CardImg, CardText, CardBody,
     CardTitle, CardSubtitle, Button ,Container,Form,FormGroup,Label,Input,Badge,InputGroup,InputGroupAddon,InputGroupText,CardHeader,CardFooter  } from 'reactstrap';
-import {getMovieDetails,getRecommendation} from "../../actions/moviesActions";
+import {getMovieDetails,getRecommendation,addMovieToFavourite,listMovieFromFavourite} from "../../actions/moviesActions";
 import {img_Url} from "../../constants";
 
 import "./details.css";
 
+import 'font-awesome/css/font-awesome.min.css';
+
 
 const movieDetailsDefault = {
             data:{},
-            recommendations:[]
+            recommendations:[],
+            myFavourites:[]
 }
 
 class DetailsComponent extends Component {
@@ -21,7 +24,39 @@ class DetailsComponent extends Component {
         super(props);
         this.state = Object.assign({},movieDetailsDefault);
         this.goToDetails = this.goToDetails.bind(this);
+        this.backToHome = this.backToHome.bind(this);
+        this.addFavourtiesToLocalStorage = this.addFavourtiesToLocalStorage.bind(this);
+        this.checkFevouriteAdded = this.checkFevouriteAdded.bind(this);
 
+        //this.props.listMovieFromFavourite();
+
+    }
+
+    checkFevouriteAdded(){
+          let status = false;
+          for(var i=0;i<this.state.myFavourites.length;i++){
+              if(this.state.myFavourites[i].id == this.state.data.id){
+                status = true;
+              }
+          } 
+
+          if(!status){
+              return (
+                <div onClick={ ()=> this.addFavourtiesToLocalStorage(this.state.data) }><i className="fa pull-right fas fa-heart"></i></div> 
+              )
+          }
+
+          return ( null )
+
+
+    }
+
+    backToHome(){
+        this.props.history.push("/home");
+    }
+
+    addFavourtiesToLocalStorage(data){       
+       this.props.addMovieToFavourite(data);
     }
 
     goToDetails(id){
@@ -41,7 +76,6 @@ class DetailsComponent extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-        //console.log(nextProps);
         if(nextProps.movieDetails.fetchingSuccess){               
                 this.setState({
                     data:nextProps.movieDetails.payload
@@ -68,6 +102,14 @@ class DetailsComponent extends Component {
                 },this)                
 
         }
+
+        if(nextProps.listMoviesFavourites && nextProps.listMoviesFavourites.payload){
+            this.setState({
+                myFavourites:nextProps.listMoviesFavourites.payload
+            },()=>{
+               
+            });
+       }
     }
 
 
@@ -76,8 +118,23 @@ class DetailsComponent extends Component {
     render(){
         return (
            <Container>
+                <Container className="searchBar">
+                            <Row>
+                                <Col md="8" sm="12" xs="12" className="pd520 " >
+                                        <Label for="exampleSelectMulti" className="homePageHeading backButton"></Label> 
+
+
+
+                                </Col>
+                                <Col md="4" sm="12" xs="12" className="pd520" >
+                                                                    
+                                
+                                    
+                                </Col>     
+                            </Row>                    
+                </Container>
                {
-                   this.state.data.id && <Row>
+                   this.state.data.id && <Row className="movieDeailsCards">
                    <Col className="m5" md="8" xs="12" sm="12">
                        <Card>
                            <Row>
@@ -86,7 +143,12 @@ class DetailsComponent extends Component {
                                </Col>
                                <Col md="7">
                                <CardBody>
-                           <CardTitle>{this.state.data.original_title}</CardTitle>
+                              
+                               {
+                                   this.checkFevouriteAdded()
+                               }
+                       
+                         <CardTitle>{this.state.data.original_title}</CardTitle>
                            <CardSubtitle>{this.state.data.tagline}</CardSubtitle>
                            <CardText>{this.state.data.overview}</CardText>
                             {
@@ -147,14 +209,18 @@ class DetailsComponent extends Component {
 const detailMapStateToProps = (state) =>{
     return {
           movieDetails:state.getMovieDetails,
-          movieRecommendations:state.getMovieRecommendations
+          movieRecommendations:state.getMovieRecommendations,
+          addMoviesFavourites:state.addMoviesFavourites,          
+          listMoviesFavourites:state.listMoviesFavourites 
     }
 }
 
 const detailDispatchToProps = (dispatch) => {
   return bindActionCreators({
                getMovieDetails,
-               getRecommendation  
+               getRecommendation,
+               addMovieToFavourite,
+               listMovieFromFavourite  
            }, dispatch);
 }
 
