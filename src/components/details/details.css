@@ -1,27 +1,26 @@
-.genres{
-    margin: 3px;
+.genres {
+  margin: 3px;
 }
 
-.recommendConainer{
-    max-height: 380px;
-    overflow: auto;
+.recommendConainer {
+  max-height: 380px;
+  overflow: auto;
 }
 
-.recommendedMovieCard{
-    margin: 5px;
+.recommendedMovieCard {
+  margin: 5px;
 }
 
-.m5{
-    margin: 5px 0px;
+.m5 {
+  margin: 5px 0px;
 }
 
-.input-group-text-override{
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+.input-group-text-override {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
 }
 
-
-.movieDeailsCards{
-    margin-top: 45px;
+.movieDeailsCards {
+  margin-top: 45px;
 }

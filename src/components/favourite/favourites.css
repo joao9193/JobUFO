@@ -1,17 +1,16 @@
-.removeBtn{
-    position: absolute;
-    left: 97%;
-    top: -15px;
-    font-size: 27px;
-    z-index: 99;
-
+.removeBtn {
+  position: absolute;
+  left: 97%;
+  top: -15px;
+  font-size: 27px;
+  z-index: 99;
 }
 
-.myFavouritesCards{
-    margin-top: 65px;
+.myFavouritesCards {
+  margin-top: 65px;
 }
 
-.noFavouritesLbl{
-    width: 100%;
-    text-align: center;
+.noFavouritesLbl {
+  width: 100%;
+  text-align: center;
 }

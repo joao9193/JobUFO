@@ -1,34 +1,29 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {Layout} from  "./common/Frame/Layout";
-import {connect} from "react-redux";
+import { Layout } from './common/Frame/Layout';
+import { connect } from 'react-redux';
 
-import axios from "axios";
+import axios from 'axios';
 
 class AppComponent extends Component {
-
-  constructor(props){
-        super(props); 
+  constructor(props) {
+    super(props);
   }
 
-  componentWillMount(){
-    
-  }
+  componentWillMount() {}
 
   render() {
     return (
-      <div> 
-              <Layout />
+      <div>
+        <Layout />
       </div>
     );
   }
 }
 
-const appComponentMapStateToProps = (state)=>{
-    return {
-     
-    }
-}
+const appComponentMapStateToProps = state => {
+  return {};
+};
 
-export const App = connect(appComponentMapStateToProps)(AppComponent) ;
+export const App = connect(appComponentMapStateToProps)(AppComponent);
